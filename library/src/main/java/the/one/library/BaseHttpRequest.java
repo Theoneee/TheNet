@@ -39,10 +39,11 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
     private List<Call> mCalls = new ArrayList<>();
     static private Gson mGson;
 
+    public static Builder builder;
+
     private Gson getGson() {
         if (mGson == null) {
             GsonBuilder builder = new GsonBuilder();
-//            builder.registerTypeAdapter(float.class,FLOAT);
             mGson = builder.create();
         }
         return mGson;
@@ -107,7 +108,6 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
             if (callback == null) {
                 return;
             }
-
             Type type = callback.getType();
             int code = response.code();
             String body = null;
@@ -119,9 +119,9 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
                 if (code == 200) {
                     JSONObject object = new JSONObject(body);
                     String msg = "";
-                    if (object.has("message"))
-                         msg = object.getString("message");
-                    int status = object.getInt("event");
+                    if (object.has(builder.getMsg()))
+                         msg = object.getString(builder.getMsg());
+                    int status = object.getInt(builder.getCode());
                     if (status == 0) {
                         if (type == String.class) {
                             result = body;
@@ -130,10 +130,10 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
                             return;
                         }
                         if (callback instanceof ListCallback) {
-                            result = object.getString("data");
+                            result = object.getString(builder.getData());
                             Log.e(TAG, "onResponse: ListCallback " + result);
                             if (object.has("pageInfo")) {
-                                String pageInfo = object.getString("pageInfo");
+                                String pageInfo = object.getString(builder.getPage());
                                 if (null != pageInfo && !pageInfo.isEmpty()) {
                                     pageInfoBean = getGson().fromJson(pageInfo, new TypeToken<PageInfoBean>() {
                                     }.getType());
@@ -143,7 +143,7 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
                             Object t = getGson().fromJson(result, type);
                             sendSuccess(listCallback, t, msg, pageInfoBean);
                         } else {
-                            result = object.getString("data");
+                            result = object.getString(builder.getData());
                             Log.e(TAG, "onResponse: else " + result);
                             Object t = getGson().fromJson(result, type);
                             sendSuccess(callback, t, msg, pageInfoBean);
@@ -159,7 +159,7 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
                     String msg = null;
                     try {
                         JSONObject object = new JSONObject(body);
-                        msg = object.getString("msg");
+                        msg = object.getString(builder.getMsg());
                     } catch (Exception e) {
 
                     }
