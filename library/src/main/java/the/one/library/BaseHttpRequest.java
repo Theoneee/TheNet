@@ -39,7 +39,12 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
     private List<Call> mCalls = new ArrayList<>();
     static private Gson mGson;
 
-    public static Builder builder;
+    private static Builder builder;
+
+    public static Builder getBuilder() {
+        if (null == builder) builder = new Builder();
+        return builder;
+    }
 
     private Gson getGson() {
         if (mGson == null) {
@@ -120,7 +125,7 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
                     JSONObject object = new JSONObject(body);
                     String msg = "";
                     if (object.has(builder.getMsg()))
-                         msg = object.getString(builder.getMsg());
+                        msg = object.getString(builder.getMsg());
                     int status = object.getInt(builder.getCode());
                     if (status == 0) {
                         if (type == String.class) {
