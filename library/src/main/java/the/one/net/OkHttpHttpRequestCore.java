@@ -1,4 +1,4 @@
-package the.one.library;
+package the.one.net;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -13,7 +13,7 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import the.one.library.callback.Callback;
+import the.one.net.callback.Callback;
 
 /**
  * 网络请求类

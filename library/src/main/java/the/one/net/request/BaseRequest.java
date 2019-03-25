@@ -1,10 +1,10 @@
-package the.one.library.request;
+package the.one.net.request;
 
 import java.util.Map;
 
-import the.one.library.BaseHttpRequest;
-import the.one.library.callback.Callback;
-import the.one.library.callback.ListCallback;
+import the.one.net.BaseHttpRequest;
+import the.one.net.callback.Callback;
+import the.one.net.callback.ListCallback;
 
 
 /**

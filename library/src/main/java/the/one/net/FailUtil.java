@@ -1,4 +1,4 @@
-package the.one.library;
+package the.one.net;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

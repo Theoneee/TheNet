@@ -1,9 +1,9 @@
-package the.one.library;
+package the.one.net;
 
 
 import java.util.Map;
 
-import the.one.library.callback.Callback;
+import the.one.net.callback.Callback;
 
 /**
  * 网络请求抽象类

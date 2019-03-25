@@ -1,4 +1,4 @@
-package the.one.library;
+package the.one.net;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,9 +24,9 @@ import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import the.one.library.callback.Callback;
-import the.one.library.callback.ListCallback;
-import the.one.library.entity.PageInfoBean;
+import the.one.net.callback.Callback;
+import the.one.net.callback.ListCallback;
+import the.one.net.entity.PageInfoBean;
 
 /**
  * 网络请求基类

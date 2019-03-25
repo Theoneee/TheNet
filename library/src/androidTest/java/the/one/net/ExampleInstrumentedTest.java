@@ -1,4 +1,4 @@
-package the.one.library;
+package the.one.net;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

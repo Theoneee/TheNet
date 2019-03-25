@@ -1,4 +1,4 @@
-package the.one.library.entity;
+package the.one.net.entity;
 
 
 import android.os.Parcel;

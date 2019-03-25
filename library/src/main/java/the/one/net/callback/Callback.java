@@ -1,11 +1,11 @@
-package the.one.library.callback;
+package the.one.net.callback;
 
 import com.google.gson.internal.$Gson$Types;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import the.one.library.entity.PageInfoBean;
+import the.one.net.entity.PageInfoBean;
 
 public abstract class Callback<T> {
 

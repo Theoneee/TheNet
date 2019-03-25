@@ -1,4 +1,4 @@
-package the.one.library;
+package the.one.net;
 
 import org.junit.Test;
 
