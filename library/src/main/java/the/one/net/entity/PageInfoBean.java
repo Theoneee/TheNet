@@ -21,11 +21,10 @@ public class PageInfoBean implements Parcelable {
     private int Page;
     private int PageSize;
 
-    public PageInfoBean(int pageTotalCount, String totalCount, int page, int pageSize) {
+
+    public PageInfoBean(int pageTotalCount, int page) {
         this.pageTotalCount = pageTotalCount;
-        this.totalCount = totalCount;
         Page = page;
-        PageSize = pageSize;
     }
 
     public int getPageTotalCount() {
