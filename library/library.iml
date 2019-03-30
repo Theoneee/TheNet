@@ -102,6 +102,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio:1.8.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.5@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.alibaba:fastjson:1.1.70.android@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:3.3.1@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.zhy:okhttputils-2.6.2" level="project" />
   </component>
