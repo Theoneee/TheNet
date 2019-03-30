@@ -30,7 +30,7 @@ import android.util.Log;
 public class LogUtil {
 
     public static void showLog(String str) {
-        if (!BaseHttpRequest.getmBuilder().isDebug())
+        if (!BaseHttpRequest.getBuilder().isDebug())
             Log.e("Http", str);
     }
 
