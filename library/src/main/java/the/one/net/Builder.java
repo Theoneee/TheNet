@@ -35,6 +35,10 @@ public class Builder {
 
     private String page = "page";
 
+    private String[] excludes = {"associated"};
+
+    private boolean isDebug = true;
+
     public String getCode() {
         return code;
     }
@@ -69,5 +73,21 @@ public class Builder {
     public Builder setPage(String page) {
         this.page = page;
         return this;
+    }
+
+    public String[] getExcludes() {
+        return excludes;
+    }
+
+    public void setExcludes(String[] excludes) {
+        this.excludes = excludes;
+    }
+
+    public boolean isDebug() {
+        return isDebug;
+    }
+
+    public void setDebug(boolean debug) {
+        isDebug = debug;
     }
 }
