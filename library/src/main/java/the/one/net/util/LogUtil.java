@@ -20,6 +20,8 @@ package the.one.net.util;
 
 import android.util.Log;
 
+import the.one.net.TheNet;
+
 /**
  * @author The one
  * @date 2019/3/30 0030
@@ -30,7 +32,7 @@ import android.util.Log;
 public class LogUtil {
 
     public static void showLog(String str) {
-        if (TheNetUtil.getBuilder().isDebug())
+        if (TheNet.getBuilder().isDebug())
             Log.e("http", str);
     }
 

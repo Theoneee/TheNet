@@ -20,8 +20,8 @@ package com.sjcq.app;
 
 import android.app.Application;
 
-import the.one.net.util.Builder;
-import the.one.net.util.TheNetUtil;
+import the.one.net.entity.Builder;
+import the.one.net.TheNet;
 
 /**
  * @author The one
@@ -35,6 +35,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        TheNetUtil.init(this,new Builder().setNeedCookie(true));
+        TheNet.init(this,new Builder().setNeedCookie(true));
     }
 }

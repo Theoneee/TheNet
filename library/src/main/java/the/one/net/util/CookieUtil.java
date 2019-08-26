@@ -22,6 +22,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import the.one.net.TheNet;
+
 /**
  * @author The one
  * @date 2019/8/26 0026
@@ -41,10 +43,10 @@ public class CookieUtil {
             cookieUtil = new CookieUtil();
         }
         if(null == mSp){
-            if(null == TheNetUtil.getContext()){
-                new RuntimeException("TheNetUtil 需要初始化");
+            if(null == TheNet.getContext()){
+                new RuntimeException("TheNet 需要初始化");
             }
-            mSp = TheNetUtil.getContext().getSharedPreferences(COOKIE_PREF, Context.MODE_PRIVATE);
+            mSp = TheNet.getContext().getSharedPreferences(COOKIE_PREF, Context.MODE_PRIVATE);
         }
         return cookieUtil;
     }

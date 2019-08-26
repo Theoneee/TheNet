@@ -1,4 +1,4 @@
-package the.one.net.util;
+package the.one.net.entity;
 
 //  ┏┓　　　┏┓
 //┏┛┻━━━┛┻┓

@@ -1,4 +1,4 @@
-package the.one.net.util;
+package the.one.net;
 
 //  ┏┓　　　┏┓
 //┏┛┻━━━┛┻┓
@@ -21,6 +21,8 @@ package the.one.net.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
+import the.one.net.entity.Builder;
+
 /**
  * @author The one
  * @date 2019/8/26 0026
@@ -28,7 +30,7 @@ import android.content.Context;
  * @email 625805189@qq.com
  * @remark
  */
-public class TheNetUtil {
+public class TheNet {
 
     @SuppressLint("StaticFieldLeak")
     private static Context mContext;

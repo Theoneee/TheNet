@@ -14,10 +14,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import the.one.net.callback.Callback;
 import the.one.net.util.AddCookiesInterceptor;
-import the.one.net.util.Builder;
+import the.one.net.entity.Builder;
 import the.one.net.util.LogUtil;
 import the.one.net.util.SaveCookiesInterceptor;
-import the.one.net.util.TheNetUtil;
 
 /**
  * 网络请求类
@@ -35,7 +34,7 @@ public abstract class OkHttpHttpRequestCore extends HttpRequest {
     public OkHttpHttpRequestCore() {
         if (mOkHttpClient == null) {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            mBuilder = TheNetUtil.getBuilder();
+            mBuilder = TheNet.getBuilder();
             if(mBuilder.isNeedCookie()){
                 builder.addInterceptor(new AddCookiesInterceptor());
                 builder.addInterceptor(new SaveCookiesInterceptor());
