@@ -1,4 +1,4 @@
-package the.one.net;
+package the.one.net.entity;
 
 //  ┏┓　　　┏┓
 //┏┛┻━━━┛┻┓
@@ -18,20 +18,40 @@ package the.one.net;
 //      ┃┫┫　┃┫┫
 //      ┗┻┛　┗┻┛
 
-import android.util.Log;
-
 /**
  * @author The one
- * @date 2019/3/30 0030
+ * @date 2019/4/4 0004
  * @describe TODO
  * @email 625805189@qq.com
  * @remark
  */
-public class LogUtil {
+public class Response<T> {
 
-    public static void showLog(String str) {
-        if (!BaseHttpRequest.getBuilder().isDebug())
-            Log.e("Http", str);
+    private int ret; // 返回的code
+    private T data; // 具体的数据结果
+    private String msg; // message 可用来返回接口的说明
+
+    public int getCode() {
+        return ret;
     }
 
+    public void setCode(int code) {
+        this.ret = code;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 }

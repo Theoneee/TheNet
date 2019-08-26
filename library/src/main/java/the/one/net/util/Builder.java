@@ -1,4 +1,4 @@
-package the.one.net;
+package the.one.net.util;
 
 //  ┏┓　　　┏┓
 //┏┛┻━━━┛┻┓
@@ -37,7 +37,10 @@ public class Builder {
 
     private String[] excludes = {"associated"};
 
+    private boolean isNeedCookie = false;
+
     private boolean isDebug = true;
+
 
     public String getCode() {
         return code;
@@ -79,15 +82,26 @@ public class Builder {
         return excludes;
     }
 
-    public void setExcludes(String[] excludes) {
+    public Builder setExcludes(String[] excludes) {
         this.excludes = excludes;
+        return this;
+    }
+
+    public boolean isNeedCookie() {
+        return isNeedCookie;
+    }
+
+    public Builder setNeedCookie(boolean needCookie) {
+        isNeedCookie = needCookie;
+        return this;
     }
 
     public boolean isDebug() {
         return isDebug;
     }
 
-    public void setDebug(boolean debug) {
+    public Builder setDebug(boolean debug) {
         isDebug = debug;
+        return this;
     }
 }

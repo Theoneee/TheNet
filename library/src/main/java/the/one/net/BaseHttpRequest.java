@@ -28,6 +28,7 @@ import okhttp3.Response;
 import the.one.net.callback.Callback;
 import the.one.net.callback.ListCallback;
 import the.one.net.entity.PageInfoBean;
+import the.one.net.util.LogUtil;
 
 /**
  * 网络请求基类
@@ -39,13 +40,6 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
     private static final String TAG = "BaseHttpRequest";
     private List<Call> mCalls = new ArrayList<>();
     static private Gson mGson;
-
-    private static Builder mBuilder = null;
-
-    public static Builder getBuilder() {
-        if (null == mBuilder) mBuilder = new Builder();
-        return mBuilder;
-    }
 
     private Gson getGson() {
         if (mGson == null) {
@@ -139,23 +133,21 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
                 body = response.body().string();
                 LogUtil.showLog("返回的数据-----" + code + "====" + body);
                 if (code == 200) {
+                    if (type == String.class) {
+                        result = body;
+                        sendSuccess(callback, result, "", pageInfoBean);
+                        return;
+                    }
                     JSONObject object = new JSONObject(body);
                     String msg = "";
-                    if (object.has(getBuilder().getMsg()))
-                        msg = object.getString(getBuilder().getMsg());
-                    int status = object.getInt(getBuilder().getCode());
+                    if (object.has(mBuilder.getMsg()))
+                        msg = object.getString(mBuilder.getMsg());
+                    int status = object.getInt(mBuilder.getCode());
                     if (status == 0) {
-                        if (type == String.class) {
-                            result = body;
-                            LogUtil.showLog( "onResponse: String " + result);
-                            sendSuccess(callback, result, msg, pageInfoBean);
-                            return;
-                        }
                         if (callback instanceof ListCallback) {
-                            result = object.getString(getBuilder().getData());
-                            LogUtil.showLog("onResponse: ListCallback " + result);
-                            if (object.has("pageInfo")) {
-                                String pageInfo = object.getString(getBuilder().getPage());
+                            result = object.getString(mBuilder.getData());
+                            if (object.has(mBuilder.getPage())) {
+                                String pageInfo = object.getString(mBuilder.getPage());
                                 if (null != pageInfo && !pageInfo.isEmpty()) {
                                     pageInfoBean = getGson().fromJson(pageInfo, new TypeToken<PageInfoBean>() {
                                     }.getType());
@@ -165,8 +157,7 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
                             Object t = getGson().fromJson(result, type);
                             sendSuccess(listCallback, t, msg, pageInfoBean);
                         } else {
-                            result = object.getString(getBuilder().getData());
-                            LogUtil.showLog("onResponse: else " + result);
+                            result = object.getString(mBuilder.getData());
                             Object t = getGson().fromJson(result, type);
                             sendSuccess(callback, t, msg, pageInfoBean);
                         }
@@ -181,7 +172,7 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
                     String msg = null;
                     try {
                         JSONObject object = new JSONObject(body);
-                        msg = object.getString(getBuilder().getMsg());
+                        msg = object.getString(mBuilder.getMsg());
                     } catch (Exception e) {
 
                     }
@@ -256,8 +247,8 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
             }
         }
         String json = params == null ? "{}" : getGson().toJson(params, Map.class);
-        LogUtil.showLog( url);
-        LogUtil.showLog( json);
+        LogUtil.showLog(url);
+        LogUtil.showLog(json);
         post(url, params, callback);
     }
 
@@ -310,7 +301,7 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
             }
             url = url.substring(0, url.length() - 1);
         }
-        LogUtil.showLog( "请求地址" + url);
+        LogUtil.showLog("请求地址" + url);
         final Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Content-Type", "application/json")
