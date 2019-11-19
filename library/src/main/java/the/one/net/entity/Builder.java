@@ -27,6 +27,8 @@ package the.one.net.entity;
  */
 public class Builder {
 
+    private int successCode = 0;
+
     private String code = "code";
 
     private String msg = "msg";
@@ -41,6 +43,14 @@ public class Builder {
 
     private boolean isDebug = true;
 
+    public int getSuccessCode() {
+        return successCode;
+    }
+
+    public Builder setSuccessCode(int successCode) {
+        this.successCode = successCode;
+        return this;
+    }
 
     public String getCode() {
         return code;

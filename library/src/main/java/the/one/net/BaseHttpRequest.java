@@ -13,9 +13,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,12 +25,11 @@ import okhttp3.Response;
 import the.one.net.callback.Callback;
 import the.one.net.callback.ListCallback;
 import the.one.net.entity.PageInfoBean;
+import the.one.net.util.FailUtil;
 import the.one.net.util.LogUtil;
 
 /**
  * 网络请求基类
- * 请继承该类 否者获取不到 T 的Class类型
- * Created by tifezh on 2016/3/25.
  */
 public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
 
@@ -64,7 +60,6 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
         }
         return mGson;
     }
-
 
     /**
      * 取消所有的网络请求
@@ -101,20 +96,8 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
             if (e != null && e.getMessage() != null && e.getMessage().equalsIgnoreCase("Canceled")) {
                 return;
             }
-            String errorText = "网络错误";
-            if (e != null && e instanceof SocketTimeoutException) {
-                errorText = "连接服务器超时";
-            }
-            if (e != null && e instanceof ConnectException) {
-                errorText = "连接服务器失败，请检查网络";
-            }
-
-            if (e != null && e instanceof UnknownHostException) {
-                errorText = "找不到服务器，请检查网络";
-            }
-            e.printStackTrace();
             if (this.callback != null) {
-                sendFailure(callback, 0, errorText);
+                sendFailure(callback, 0, FailUtil.getFailString(e));
             }
         }
 
@@ -128,37 +111,59 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
             int code = response.code();
             String body = null;
             String result = null;
+            String msg = "";
             PageInfoBean pageInfoBean = null;
             try {
                 body = response.body().string();
                 LogUtil.showLog("返回的数据-----" + code + "====" + body);
                 if (code == 200) {
-                    if (type == String.class) {
-                        result = body;
-                        sendSuccess(callback, result, "", pageInfoBean);
+//                    LogUtil.showLog("返回的数据-----   0" );
+                    JSONObject object;
+                    try {
+                        object = new JSONObject(body);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (type == String.class) {
+                            sendSuccess(callback, body, msg, pageInfoBean);
+                        } else {
+                            sendFailure(callback, code, "解析JSONObject错误");
+                        }
                         return;
                     }
-                    JSONObject object = new JSONObject(body);
-                    String msg = "";
+//                    LogUtil.showLog("返回的数据-----   1" );
                     if (object.has(mBuilder.getMsg()))
                         msg = object.getString(mBuilder.getMsg());
-                    int status = object.getInt(mBuilder.getCode());
-                    if (status == 0) {
-                        if (callback instanceof ListCallback) {
-                            result = object.getString(mBuilder.getData());
-                            if (object.has(mBuilder.getPage())) {
-                                String pageInfo = object.getString(mBuilder.getPage());
-                                if (null != pageInfo && !pageInfo.isEmpty()) {
-                                    pageInfoBean = getGson().fromJson(pageInfo, new TypeToken<PageInfoBean>() {
-                                    }.getType());
-                                }
+//                    LogUtil.showLog("返回的数据-----   2" );
+                    int status = -1;
+                    if (object.has(mBuilder.getCode())) {
+                        status = object.getInt(mBuilder.getCode());
+//                        LogUtil.showLog("返回的数据-----   3" +status );
+                    } else {
+//                        LogUtil.showLog("返回的数据-----   4" );
+                        if (type == String.class) {
+                            sendSuccess(callback, body, msg, pageInfoBean);
+                            return;
+                        }
+                    }
+//                    LogUtil.showLog("返回的数据-----   5" +status );
+                    if (status == mBuilder.getSuccessCode()) {
+                        if (type == String.class) {
+                            sendSuccess(callback, body, msg, pageInfoBean);
+                            return;
+                        }
+                        result = object.getString(mBuilder.getData());
+                        if (object.has(mBuilder.getPage())) {
+                            String pageInfo = object.getString(mBuilder.getPage());
+                            if (null != pageInfo && !pageInfo.isEmpty()) {
+                                pageInfoBean = getGson().fromJson(pageInfo, new TypeToken<PageInfoBean>() {
+                                }.getType());
                             }
+                        }
+                        Object t = getGson().fromJson(result, type);
+                        if (callback instanceof ListCallback) {
                             ListCallback listCallback = (ListCallback) callback;
-                            Object t = getGson().fromJson(result, type);
                             sendSuccess(listCallback, t, msg, pageInfoBean);
                         } else {
-                            result = object.getString(mBuilder.getData());
-                            Object t = getGson().fromJson(result, type);
                             sendSuccess(callback, t, msg, pageInfoBean);
                         }
                     } else if (status == 511) {
@@ -169,7 +174,6 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
                         sendFailure(callback, status, !TextUtils.isEmpty(msg) ? msg : "服务器内部错误");
                     }
                 } else {
-                    String msg = null;
                     try {
                         JSONObject object = new JSONObject(body);
                         msg = object.getString(mBuilder.getMsg());
@@ -200,6 +204,8 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
                     LogUtil.showLog("返回的数据-----成功");
                 } catch (Exception e) {
                     e.printStackTrace();
+                    LogUtil.showLog("返回的数据-----失败");
+                    callback.onFailure(0, "返回失败");
                 }
             }
         });
@@ -240,7 +246,7 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
      * @param params
      * @param callback
      */
-    protected void postJson(String url, Map<String, String> params, Callback callback) {
+    protected void postJson(String url, Map<String, Object> params, Callback callback) {
         if (callback != null && callback instanceof ListCallback) {
             if (params == null) {
                 params = new HashMap<>();
@@ -288,7 +294,7 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
      * @param url
      * @param callback
      */
-    protected void getJson(String url, Map<String, String> params, Callback callback) {
+    protected void getJson(String url, Map<String, Object> params, Callback callback) {
         if (callback != null && callback instanceof ListCallback) {
             if (params == null) {
                 params = new HashMap<>();
@@ -296,12 +302,11 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
         }
         if (params != null && params.size() != 0) {
             url += "?";
-            for (Map.Entry<String, String> entry : params.entrySet()) {
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
                 url += entry.getKey() + "=" + entry.getValue() + "&";
             }
             url = url.substring(0, url.length() - 1);
         }
-        LogUtil.showLog("请求地址" + url);
         final Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Content-Type", "application/json")
@@ -310,27 +315,26 @@ public abstract class BaseHttpRequest extends OkHttpHttpRequestCore {
         doExecute(request, callback);
     }
 
-    @Deprecated
     @Override
     protected void get(String url, Callback callback) {
-        super.get(url, callback);
+        if (TextUtils.isEmpty(url) || !url.startsWith("http")) {
+            sendFailure(callback, 0, "请求错误");
+        } else
+            super.get(url, callback);
     }
 
-    @Deprecated
     @Override
-    protected void get(String url, Map<String, String> params, Callback data) {
+    protected void get(String url, Map<String, Object> params, Callback data) {
         super.get(url, params, data);
     }
 
-    @Deprecated
     @Override
     protected void post(String url, String mediaType, String text, Callback callback) {
         super.post(url, mediaType, text, callback);
     }
 
-    @Deprecated
     @Override
-    protected void post(String url, Map<String, String> params, Callback callback) {
+    protected void post(String url, Map<String, Object> params, Callback callback) {
         super.post(url, params, callback);
     }
 

@@ -16,21 +16,20 @@ import the.one.net.callback.ListCallback;
  */
 public class BaseRequest extends BaseHttpRequest {
 
-    public void getCallback(String url, Map<String,String> params,Callback callback){
+    public void getCallback(String url, Map<String,Object> params,Callback callback){
         get(url, params, callback);
     }
 
-    public void getListCallback(String url, Map<String,String> params,ListCallback callback){
+    public void getListCallback(String url, Map<String,Object> params,ListCallback callback){
         get(url, params, callback);
     }
 
-    public void postCallBack(String url, Map<String,String> params,Callback callback){
+    public void postCallBack(String url, Map<String,Object> params,Callback callback){
         post(url, params, callback);
     }
 
-    public void postListCallback(String url, Map<String,String> params,ListCallback callback){
+    public void postListCallback(String url, Map<String,Object> params,ListCallback callback){
         post(url, params, callback);
     }
-
 
 }

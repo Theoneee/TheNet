@@ -15,7 +15,7 @@ public abstract class HttpRequest {
      * @param params  键值对参数
      * @param callback  回调
      */
-    abstract protected void post(String url, Map<String,String> params, Callback callback);
+    abstract protected void post(String url, Map<String,Object> params, Callback callback);
     /**
      * post请求 json
      * @param url 地址
@@ -37,7 +37,7 @@ public abstract class HttpRequest {
      * @param params
      * @param callback
      */
-    abstract protected void get(String url, Map<String,String> params, Callback callback);
+    abstract protected void get(String url, Map<String,Object> params, Callback callback);
 
 
 }

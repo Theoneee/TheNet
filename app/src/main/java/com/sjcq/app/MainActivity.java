@@ -13,6 +13,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void test(View view){
-
+        new TestRequest().getTest();
     }
 }

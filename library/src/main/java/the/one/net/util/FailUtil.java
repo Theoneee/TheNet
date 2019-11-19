@@ -28,6 +28,7 @@ public class FailUtil {
         if (e != null && e instanceof UnknownHostException) {
             errorText = "找不到服务器，请检查网络";
         }
+        assert e != null;
         e.printStackTrace();
         return errorText;
     }

@@ -13,8 +13,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import the.one.net.callback.Callback;
-import the.one.net.util.AddCookiesInterceptor;
 import the.one.net.entity.Builder;
+import the.one.net.util.AddCookiesInterceptor;
 import the.one.net.util.LogUtil;
 import the.one.net.util.SaveCookiesInterceptor;
 
@@ -24,18 +24,16 @@ import the.one.net.util.SaveCookiesInterceptor;
  */
 public abstract class OkHttpHttpRequestCore extends HttpRequest {
 
-    private String TAG = "OkHttpHttpRequestCore";
     public static final String MEDIA_TYPE_JSON = "application/json; charset=utf-8";
-    private static OkHttpClient mOkHttpClient;
+    protected static OkHttpClient mOkHttpClient;
     private Handler mHander = null;
-
-    protected  Builder mBuilder = null;
+    static Builder mBuilder = null;
 
     public OkHttpHttpRequestCore() {
         if (mOkHttpClient == null) {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             mBuilder = TheNet.getBuilder();
-            if(mBuilder.isNeedCookie()){
+            if (mBuilder.isNeedCookie()) {
                 builder.addInterceptor(new AddCookiesInterceptor());
                 builder.addInterceptor(new SaveCookiesInterceptor());
             }
@@ -51,20 +49,20 @@ public abstract class OkHttpHttpRequestCore extends HttpRequest {
     }
 
     @Override
-    protected void post(String url, Map<String, String> params, Callback callback) {
+    protected void post(String url, Map<String, Object> params, Callback callback) {
         FormBody.Builder builder = new FormBody.Builder();
         String testUrl = url;
         if (params != null && params.size() != 0) {
             testUrl += "?";
-            for (Map.Entry<String, String> entry : params.entrySet()) {
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
                 if (entry.getKey() != null && entry.getValue() != null) {
-                    builder.add(entry.getKey(), entry.getValue());
+                    builder.add(entry.getKey(), entry.getValue().toString());
                 }
                 testUrl += entry.getKey() + "=" + entry.getValue() + "&";
             }
             testUrl = testUrl.substring(0, testUrl.length() - 1);
         }
-        LogUtil.showLog("请求的地址  "+testUrl);
+        LogUtil.showLog("请求的地址  " + testUrl);
         doPost(url, builder.build(), callback);
     }
 
@@ -76,7 +74,6 @@ public abstract class OkHttpHttpRequestCore extends HttpRequest {
 
     @Override
     protected void get(String url, Callback callback) {
-        LogUtil.showLog("get: " + url);
         final Request request = new Request.Builder()
                 .url(url)
                 .get()
@@ -85,10 +82,10 @@ public abstract class OkHttpHttpRequestCore extends HttpRequest {
     }
 
     @Override
-    protected void get(String url, Map<String, String> params, Callback data) {
+    protected void get(String url, Map<String, Object> params, Callback data) {
         if (params != null && params.size() != 0) {
             url += "?";
-            for (Map.Entry<String, String> entry : params.entrySet()) {
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
                 url += entry.getKey() + "=" + entry.getValue() + "&";
             }
             url = url.substring(0, url.length() - 1);

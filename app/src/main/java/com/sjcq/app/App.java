@@ -35,6 +35,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        TheNet.init(this,new Builder().setNeedCookie(true));
+        TheNet.init(this,new Builder().setCode("event"));
     }
 }
