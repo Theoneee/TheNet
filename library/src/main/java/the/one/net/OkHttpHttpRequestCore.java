@@ -6,6 +6,12 @@ import android.os.Looper;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509KeyManager;
+import javax.net.ssl.X509TrustManager;
+
 import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
@@ -14,6 +20,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import the.one.net.callback.Callback;
 import the.one.net.entity.Builder;
+import the.one.net.ssl.SSLSocketFactoryImpl;
+import the.one.net.ssl.X509TrustManagerImpl;
 import the.one.net.util.AddCookiesInterceptor;
 import the.one.net.util.LogUtil;
 import the.one.net.util.SaveCookiesInterceptor;
@@ -37,8 +45,17 @@ public abstract class OkHttpHttpRequestCore extends HttpRequest {
                 builder.addInterceptor(new AddCookiesInterceptor());
                 builder.addInterceptor(new SaveCookiesInterceptor());
             }
+            X509TrustManager trustAllCert =  new X509TrustManagerImpl();
+            SSLSocketFactory sslSocketFactory = new SSLSocketFactoryImpl(trustAllCert);
+
             builder.connectTimeout(10, TimeUnit.SECONDS);
             builder.readTimeout(10, TimeUnit.SECONDS);
+            builder.sslSocketFactory(sslSocketFactory, trustAllCert).hostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String s, SSLSession sslSession) {
+                    return true;
+                }
+            });
             mOkHttpClient = builder.build();
         }
         mHander = new Handler(Looper.getMainLooper());
